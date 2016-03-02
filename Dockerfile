@@ -2,7 +2,7 @@ FROM alpine:3.3
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="0.2.0"
+LABEL version="1.0.0"
 
 EXPOSE 3030
 
@@ -43,9 +43,8 @@ RUN \
     ruby-dev && \
   rm -rf /var/cache/apk/*
 
-ADD rootfs/opt/dashing-icinga2/config.ru /opt/dashing-icinga2/config.ru
+ADD rootfs/ /
 
-# CMD [ "/usr/bin/supervisord" ]
+CMD [ "/opt/startup.sh" ]
 
-CMD [ '/bin/sh' ]
 # EOF
