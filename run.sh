@@ -15,6 +15,12 @@ docker run \
   --tty \
   --detach \
   --publish=3030:3030 \
+  --link ${USER}-icinga2:icinga2 \
+  --env AUTH_TOKEN="xxxxxx" \
+  --env ICINGA2_HOST=${USER}-icinga2.docker \
+  --env ICINGA2_PORT=5665 \
+  --env ICINGA2_DASHING_APIUSER="dashing" \
+  --env ICINGA2_DASHING_APIPASS="icinga2ondashingr0xx" \
   --dns=172.17.0.1 \
   --hostname=${USER}-${TYPE} \
   --name ${CONTAINER_NAME} \
