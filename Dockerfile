@@ -2,15 +2,18 @@ FROM alpine:3.3
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="0.1.0"
+LABEL version="0.2.0"
 
-#EXPOSE 3030
+EXPOSE 3030
 
 # ---------------------------------------------------------------------------------------
 
 RUN \
-  apk update && \
-  apk add \
+  apk --quiet update && \
+  apk --quiet upgrade
+
+RUN \
+  apk --quiet add \
     build-base \
     git \
     nodejs \
@@ -21,26 +24,28 @@ RUN \
     supervisor
 
 RUN \
-  gem install \
-    bundle \
-    dashing && \
-  bundle install
+  gem install --quiet bundle
 
-#RUN \
-#  mkdir /opt && \
-#  cd /opt && \
-#  git clone https://github.com/Icinga/dashing-icinga2.git
+RUN \
+  gem install --quiet dashing
+
+RUN \
+  mkdir /opt && \
+  cd /opt && \
+  git clone --quiet https://github.com/Icinga/dashing-icinga2.git && \
+  cd /opt/dashing-icinga2 && \
+  bundle install
 
 RUN \
   apk del --purge \
-    git
+    git \
     build-base \
     ruby-dev && \
-    rm -rf /tmp/* /var/cache/apk/*
+  rm -rf /var/cache/apk/*
 
-#ADD rootfs/opt/dashing-icinga2/config.ru /opt/dashing-icinga2/config.ru
+ADD rootfs/opt/dashing-icinga2/config.ru /opt/dashing-icinga2/config.ru
 
-#CMD [ "/usr/bin/supervisord" ]
+# CMD [ "/usr/bin/supervisord" ]
 
 CMD [ '/bin/sh' ]
 # EOF
