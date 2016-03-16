@@ -1,4 +1,5 @@
-FROM alpine:3.3
+
+FROM alpine:edge
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
@@ -13,6 +14,10 @@ RUN \
   apk --quiet upgrade
 
 RUN \
+  rm -Rf /var/run && \
+  ln -s /run /var/run
+
+RUN \
   apk --quiet add \
     build-base \
     git \
@@ -24,9 +29,7 @@ RUN \
     supervisor
 
 RUN \
-  gem install --quiet bundle
-
-RUN \
+  gem install --quiet bundle && \
   gem install --quiet dashing
 
 RUN \

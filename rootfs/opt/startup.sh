@@ -15,7 +15,7 @@ then
   if [ -f /opt/dashing-icinga2/config.ru ]
   then
     sed -i 's,%AUTH_TOKEN%,'${AUTH_TOKEN}',g'                            /opt/dashing-icinga2/config.ru
-    
+
     sed -i 's/%ICINGA2_HOST%/'${ICINGA2_HOST}'/g'                        /opt/dashing-icinga2/jobs/icinga2.rb
     sed -i 's/%ICINGA2_PORT%/'${ICINGA2_PORT}'/g'                        /opt/dashing-icinga2/jobs/icinga2.rb
     sed -i 's/%ICINGA2_DASHING_APIUSER%/'${ICINGA2_DASHING_APIUSER}'/g'  /opt/dashing-icinga2/jobs/icinga2.rb
@@ -40,6 +40,4 @@ echo -e "\n Starting Supervisor.\n  You can safely CTRL-C and the container will
 if [ -f /etc/supervisord.conf ]
 then
   /usr/bin/supervisord -c /etc/supervisord.conf >> /dev/null
-else
-  exec /bin/sh
 fi
