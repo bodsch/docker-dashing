@@ -84,7 +84,7 @@ def get_app()
 end
 
 
-SCHEDULER.every '10s' do
+SCHEDULER.every '30s' do
 
   total_critical = 0
   total_warning = 0
@@ -96,7 +96,7 @@ SCHEDULER.every '10s' do
   icingaapplication = result["results"][0] # there's only one row
   app_info = icingaapplication["status"]
 
-  puts "App Info: " + app_info.to_s
+#  puts "App Info: " + app_info.to_s
 
   version = app_info["icingaapplication"]["app"]["version"]
 
@@ -105,7 +105,7 @@ SCHEDULER.every '10s' do
   cib = result["results"][0] # there's only one row
   status = cib["status"]
 
-  puts "Status: " + status.to_s
+#   puts "Status: " + status.to_s
 
   uptime = status["uptime"].round(2)
   avg_latency = status["avg_latency"].round(2)
