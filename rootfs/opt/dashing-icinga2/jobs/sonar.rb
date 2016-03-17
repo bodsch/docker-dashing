@@ -9,6 +9,8 @@ config_path = File.expand_path(File.join(File.dirname(__FILE__), "sonar.cfg"))
 puts "Sonar widget configuration: " + config_path
 configuration = Hash[File.read(config_path).scan(/(\S+)\s*=\s*"([^"]+)/)]
 
+exit
+
 # Required config
 server = "#{configuration['server']}".strip
 key = "#{configuration['key']}".strip
