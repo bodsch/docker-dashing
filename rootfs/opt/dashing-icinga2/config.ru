@@ -3,7 +3,7 @@ require 'dashing'
 
 configure do
   set :auth_token, '%AUTH_TOKEN%'
-  set :default_dashboard, 'icinga2'
+  set :default_dashboard, 'icinga2tv'
 
 #  # icinga2 api config
 #  set :icinga2_api_url, 'https://%ICINGA2_HOST%:%ICINGA2_PORT%'

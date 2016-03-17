@@ -84,7 +84,7 @@ def get_app()
 end
 
 
-SCHEDULER.every '3s' do
+SCHEDULER.every '10s' do
 
   total_critical = 0
   total_warning = 0

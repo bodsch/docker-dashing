@@ -48,6 +48,8 @@ RUN \
 
 ADD rootfs/ /
 
+WORKDIR /opt/dashing-icinga2
+
 CMD [ "/opt/startup.sh" ]
 
 # EOF
