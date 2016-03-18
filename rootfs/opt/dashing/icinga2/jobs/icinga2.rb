@@ -43,7 +43,7 @@ else
   exit
 end
 
-$api_url_base = "https://" + server_name.to_s + "/" + server_port.to_s
+$api_url_base = "https://" + server_name.to_s + ":" + server_port.to_s
 $api_username = api_user.to_s
 $api_password = api_pass.to_s
 $node_name    = Socket.gethostbyname(Socket.gethostname).first
