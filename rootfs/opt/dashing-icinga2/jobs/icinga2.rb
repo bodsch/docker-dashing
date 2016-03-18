@@ -19,6 +19,18 @@
 # ******************************************************************************/
 
 require 'rest_client'
+require 'yaml'
+
+config_file = File.dirname(File.expand_path(__FILE__)) + '/config/icinga2.yml'
+
+config = YAML::load(File.open(config_file))
+
+unless config["events"].nil?
+
+  config["events"].each do |event|
+    days_away = (Date.parse(event["date"]) - today).to_i
+  end
+end
 
   # icinga2 api config
 $api_url_base = "https://%ICINGA2_HOST%:%ICINGA2_PORT%"

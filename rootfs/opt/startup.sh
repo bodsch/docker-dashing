@@ -31,6 +31,17 @@ then
       ${DASHING_PATH}/jobs/icinga2.rb
   fi
 
+  if [ -f ${DASHING_PATH}/config/icinga2.yml ]
+  then
+    sed -i \
+      -e 's/%ICINGA2_HOST%/'${ICINGA2_HOST}'/g' \
+      -e 's/%ICINGA2_PORT%/'${ICINGA2_PORT}'/g' \
+      -e 's/%ICINGA2_DASHING_APIUSER%/'${ICINGA2_DASHING_APIUSER}'/g' \
+      -e 's/%ICINGA2_DASHING_APIPASS%/'${ICINGA2_DASHING_APIPASS}'/g' \
+      ${DASHING_PATH}/config/icinga2.yml
+  fi
+
+
   if [ -f ${DASHING_PATH}/run.sh ]
   then
     sed -i 's|bash|sh|g' ${DASHING_PATH}/run.sh

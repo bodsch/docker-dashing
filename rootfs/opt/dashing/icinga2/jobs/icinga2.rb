@@ -19,173 +19,215 @@
 # ******************************************************************************/
 
 require 'rest-client'
+require 'yaml'
 
-  # icinga2 api config
-$api_url_base = "https://%ICINGA2_HOST%:%ICINGA2_PORT%"
-# $icinga2_api_nodename = "clientcertificatecommonname"
-$api_username = "%ICINGA2_DASHING_APIUSER%"
-$api_password = "%ICINGA2_DASHING_APIPASS%"
+config_file = File.dirname(File.expand_path(__FILE__)) + '/../config/icinga2.yml'
 
-$node_name = Socket.gethostbyname(Socket.gethostname).first
-if defined? settings.icinga2_api_nodename
-  node_name = settings.icinga2_api_nodename
+config = YAML::load(File.open(config_file))
+
+config.inspect
+
+unless config["icinga2"].nil?
+
+  server_name = config["icinga2"]["server"]["name"]
+  server_port = config["icinga2"]["server"]["port"]
+  api_user = config["icinga2"]["api"]["user"]
+  api_pass = config["icinga2"]["api"]["password"]
+
+  puts "server: " + server_name.to_s
+  puts "port  : " + server_port.to_s
+  puts "user  : " + api_user.to_s
+  puts "pass  : " + api_pass.to_s
+else
+  puts "no valid configuration found"
+  exit
 end
-# $api_url_base = "https://192.168.99.100:4665"
-# $api_url_base = "https://localhost:5665"
-if defined? settings.icinga2_api_url
-  api_url_base = settings.icinga2_api_url
+
+$api_url_base = "https://" + server_name.to_s + "/" + server_port.to_s
+$api_username = api_user.to_s
+$api_password = api_pass.to_s
+$node_name    = Socket.gethostbyname(Socket.gethostname).first
+
+puts " api_url  : " + $api_url_base.to_s
+puts " node_name: " + $node_name.to_s
+
+
+unless config["events"].nil?
+
+  config["events"].each do |event|
+    days_away = (Date.parse(event["date"]) - today).to_i
+  end
 end
-# $api_username = "root"
-if defined? settings.icinga2_api_username
-  api_username = settings.icinga2_api_username
-end
-# $api_password = "icinga"
-if defined? settings.icinga2_api_password
-  api_password = settings.icinga2_api_password
-end
 
-# prepare the rest client ssl stuff
-def prepare_rest_client(api_url)
-  # check whether pki files are there, otherwise use basic auth
-  if File.file?("pki/" + $node_name + ".crt")
-    puts "PKI found, using client certificates for connection to Icinga 2 API"
-    cert_file = File.read("pki/" + $node_name + ".crt")
-    key_file = File.read("pki/" + $node_name + ".key")
-    ca_file = File.read("pki/ca.crt")
+def old_code
+    # icinga2 api config
+  $api_url_base = "https://%ICINGA2_HOST%:%ICINGA2_PORT%"
+  # $icinga2_api_nodename = "clientcertificatecommonname"
+  $api_username = "%ICINGA2_DASHING_APIUSER%"
+  $api_password = "%ICINGA2_DASHING_APIPASS%"
 
-    cert = OpenSSL::X509::Certificate.new(cert_file)
-    key = OpenSSL::PKey::RSA.new(key_file)
-
-    options = {:ssl_client_cert => cert, :ssl_client_key => key, :ssl_ca_file => ca_file, :verify_ssl => OpenSSL::SSL::VERIFY_NONE}
-  else
-#    puts "PKI not found, using basic auth for connection to Icinga 2 API"
-
-    options = { :user => $api_username, :password => $api_password, :verify_ssl => OpenSSL::SSL::VERIFY_NONE }
+  $node_name = Socket.gethostbyname(Socket.gethostname).first
+  if defined? settings.icinga2_api_nodename
+    node_name = settings.icinga2_api_nodename
+  end
+  # $api_url_base = "https://192.168.99.100:4665"
+  # $api_url_base = "https://localhost:5665"
+  if defined? settings.icinga2_api_url
+    api_url_base = settings.icinga2_api_url
+  end
+  # $api_username = "root"
+  if defined? settings.icinga2_api_username
+    api_username = settings.icinga2_api_username
+  end
+  # $api_password = "icinga"
+  if defined? settings.icinga2_api_password
+    api_password = settings.icinga2_api_password
   end
 
-  res = RestClient::Resource.new(URI.encode(api_url), options)
-  return res
 end
 
-def get_stats()
-  api_url = $api_url_base + "/v1/status/CIB"
-  rest_client = prepare_rest_client(api_url)
-  headers = {"Content-Type" => "application/json", "Accept" => "application/json"}
+  # prepare the rest client ssl stuff
+  def prepare_rest_client(api_url)
+    # check whether pki files are there, otherwise use basic auth
+    if File.file?("pki/" + $node_name + ".crt")
+      puts "PKI found, using client certificates for connection to Icinga 2 API"
+      cert_file = File.read("pki/" + $node_name + ".crt")
+      key_file = File.read("pki/" + $node_name + ".key")
+      ca_file = File.read("pki/ca.crt")
 
-  return rest_client.get(headers)
-end
+      cert = OpenSSL::X509::Certificate.new(cert_file)
+      key = OpenSSL::PKey::RSA.new(key_file)
 
-def get_app()
-  api_url = $api_url_base + "/v1/status/IcingaApplication"
-  rest_client = prepare_rest_client(api_url)
-  headers = {"Content-Type" => "application/json", "Accept" => "application/json"}
+      options = {:ssl_client_cert => cert, :ssl_client_key => key, :ssl_ca_file => ca_file, :verify_ssl => OpenSSL::SSL::VERIFY_NONE}
+    else
+  #    puts "PKI not found, using basic auth for connection to Icinga 2 API"
 
-  return rest_client.get(headers)
-end
+      options = { :user => $api_username, :password => $api_password, :verify_ssl => OpenSSL::SSL::VERIFY_NONE }
+    end
 
-
-SCHEDULER.every '30s' do
-
-  total_critical = 0
-  total_warning = 0
-  total_ack = 0
-  total = 0
-
-  app = get_app()
-  result = JSON.parse(app.body)
-  icingaapplication = result["results"][0] # there's only one row
-  app_info = icingaapplication["status"]
-
-#  puts "App Info: " + app_info.to_s
-
-  version = app_info["icingaapplication"]["app"]["version"]
-
-  res = get_stats()
-  result = JSON.parse(res.body)
-  cib = result["results"][0] # there's only one row
-  status = cib["status"]
-
-#   puts "Status: " + status.to_s
-
-  uptime = status["uptime"].round(2)
-  avg_latency = status["avg_latency"].round(2)
-  avg_execution_time = status["avg_execution_time"].round(2)
-
-  services_ok = status["num_services_ok"].to_int
-  services_warning = status["num_services_warning"].to_int
-  services_critical = status["num_services_critical"].to_int
-  services_unknown = status["num_services_unknown"].to_int
-  services_ack = status["num_services_acknowledged"].to_int
-  services_downtime = status["num_services_in_downtime"].to_int
-
-  hosts_up = status["num_hosts_up"].to_int
-  hosts_down = status["num_hosts_down"].to_int
-  hosts_ack = status["num_hosts_acknowledged"].to_int
-  hosts_downtime = status["num_hosts_in_downtime"].to_int
-
-  total_critical = services_critical + hosts_down
-  total_warning = services_warning
-
-  if total_critical > 0 then
-    color = 'red'
-    value = total_critical.to_s
-  elsif total_warning > 0 then
-    color = 'yellow'
-    value = total_warning.to_s
-  else
-    color = 'green'
-    value = total.to_s
+    res = RestClient::Resource.new(URI.encode(api_url), options)
+    return res
   end
 
-  # events
-  send_event('icinga-overview', {
-   value: value,
-   color: color })
+  def get_stats()
+    api_url = $api_url_base + "/v1/status/CIB"
+    rest_client = prepare_rest_client(api_url)
+    headers = {"Content-Type" => "application/json", "Accept" => "application/json"}
 
-  send_event('icinga-version', {
-   value: version.to_s,
-   color: 'blue' })
+    return rest_client.get(headers)
+  end
 
-  send_event('icinga-uptime', {
-   value: uptime.to_s + "s",
-   color: 'blue' })
+  def get_app()
+    api_url = $api_url_base + "/v1/status/IcingaApplication"
+    rest_client = prepare_rest_client(api_url)
+    headers = {"Content-Type" => "application/json", "Accept" => "application/json"}
 
-  send_event('icinga-latency', {
-   value: avg_latency.to_s + "s",
-   color: 'blue' })
+    return rest_client.get(headers)
+  end
 
-  send_event('icinga-execution-time', {
-   value: avg_execution_time.to_s + "s",
-   color: 'blue' })
 
-  # down, critical, warning
-  send_event('icinga-host-down', {
-   value: hosts_down.to_s,
-   color: 'red' })
+  SCHEDULER.every '30s' do
 
-  send_event('icinga-service-critical', {
-   value: services_critical.to_s,
-   color: 'red' })
+    total_critical = 0
+    total_warning = 0
+    total_ack = 0
+    total = 0
 
-  send_event('icinga-service-warning', {
-   value: services_warning.to_s,
-   color: 'yellow' })
+    app = get_app()
+    result = JSON.parse(app.body)
+    icingaapplication = result["results"][0] # there's only one row
+    app_info = icingaapplication["status"]
 
-  # ack, downtime
-  send_event('icinga-service-ack', {
-   value: services_ack.to_s,
-   color: 'blue' })
+    puts "App Info: " + app_info.to_s
 
-  send_event('icinga-host-ack', {
-   value: hosts_ack.to_s,
-   color: 'blue' })
+    version = app_info["icingaapplication"]["app"]["version"]
 
-  send_event('icinga-service-downtime', {
-   value: services_downtime.to_s,
-   color: 'orange' })
+    res = get_stats()
+    result = JSON.parse(res.body)
+    cib = result["results"][0] # there's only one row
+    status = cib["status"]
 
-  send_event('icinga-host-downtime', {
-   value: hosts_downtime.to_s,
-   color: 'orange' })
-end
+    puts "Status: " + status.to_s
+
+    uptime = status["uptime"].round(2)
+    avg_latency = status["avg_latency"].round(2)
+    avg_execution_time = status["avg_execution_time"].round(2)
+
+    services_ok = status["num_services_ok"].to_int
+    services_warning = status["num_services_warning"].to_int
+    services_critical = status["num_services_critical"].to_int
+    services_unknown = status["num_services_unknown"].to_int
+    services_ack = status["num_services_acknowledged"].to_int
+    services_downtime = status["num_services_in_downtime"].to_int
+
+    hosts_up = status["num_hosts_up"].to_int
+    hosts_down = status["num_hosts_down"].to_int
+    hosts_ack = status["num_hosts_acknowledged"].to_int
+    hosts_downtime = status["num_hosts_in_downtime"].to_int
+
+    total_critical = services_critical + hosts_down
+    total_warning = services_warning
+
+    if total_critical > 0 then
+      color = 'red'
+      value = total_critical.to_s
+    elsif total_warning > 0 then
+      color = 'yellow'
+      value = total_warning.to_s
+    else
+      color = 'green'
+      value = total.to_s
+    end
+
+    # events
+    send_event('icinga-overview', {
+     value: value,
+     color: color })
+
+    send_event('icinga-version', {
+     value: version.to_s,
+     color: 'blue' })
+
+    send_event('icinga-uptime', {
+     value: uptime.to_s + "s",
+     color: 'blue' })
+
+    send_event('icinga-latency', {
+     value: avg_latency.to_s + "s",
+     color: 'blue' })
+
+    send_event('icinga-execution-time', {
+     value: avg_execution_time.to_s + "s",
+     color: 'blue' })
+
+    # down, critical, warning
+    send_event('icinga-host-down', {
+     value: hosts_down.to_s,
+     color: 'red' })
+
+    send_event('icinga-service-critical', {
+     value: services_critical.to_s,
+     color: 'red' })
+
+    send_event('icinga-service-warning', {
+     value: services_warning.to_s,
+     color: 'yellow' })
+
+    # ack, downtime
+    send_event('icinga-service-ack', {
+     value: services_ack.to_s,
+     color: 'blue' })
+
+    send_event('icinga-host-ack', {
+     value: hosts_ack.to_s,
+     color: 'blue' })
+
+    send_event('icinga-service-downtime', {
+     value: services_downtime.to_s,
+     color: 'orange' })
+
+    send_event('icinga-host-downtime', {
+     value: hosts_downtime.to_s,
+     color: 'orange' })
+  end
 
