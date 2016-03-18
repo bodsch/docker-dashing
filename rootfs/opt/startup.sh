@@ -8,29 +8,32 @@ ICINGA2_PORT=${ICINGA2_PORT:-"5665"}
 ICINGA2_DASHING_APIUSER=${ICINGA2_DASHING_APIUSER:-"dashing"}
 ICINGA2_DASHING_APIPASS=${ICINGA2_DASHING_APIPASS:-"icinga"}
 
+DASHING_PATH="/opt/dashing/icinga2"
+CONFIG_FILE="${DASHING_PATH}/config.ru"
+
 # -------------------------------------------------------------------------------------------------
 
 if [ ! -f "${initfile}" ]
 then
 
-  if [ -f /opt/dashing-icinga2/config.ru ]
+  if [ -f ${CONFIG_FILE} ]
   then
-    sed -i 's,%AUTH_TOKEN%,'${AUTH_TOKEN}',g' /opt/dashing-icinga2/config.ru
+    sed -i 's,%AUTH_TOKEN%,'${AUTH_TOKEN}',g' ${CONFIG_FILE}
   fi
 
-  if [ -f /opt/dashing-icinga2/jobs/icinga2.rb ]
+  if [ -f ${DASHING_PATH}/jobs/icinga2.rb ]
   then
     sed -i \
       -e 's/%ICINGA2_HOST%/'${ICINGA2_HOST}'/g' \
       -e 's/%ICINGA2_PORT%/'${ICINGA2_PORT}'/g' \
       -e 's/%ICINGA2_DASHING_APIUSER%/'${ICINGA2_DASHING_APIUSER}'/g' \
       -e 's/%ICINGA2_DASHING_APIPASS%/'${ICINGA2_DASHING_APIPASS}'/g' \
-      /opt/dashing-icinga2/jobs/icinga2.rb
+      ${DASHING_PATH}/jobs/icinga2.rb
   fi
 
-  if [ -f /opt/dashing-icinga2/run.sh ]
+  if [ -f ${DASHING_PATH}/run.sh ]
   then
-    sed -i 's|bash|sh|g' /opt/dashing-icinga2/run.sh
+    sed -i 's|bash|sh|g' ${DASHING_PATH}/run.sh
   fi
 
   touch ${initfile}
