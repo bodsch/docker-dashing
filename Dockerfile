@@ -3,7 +3,7 @@ FROM alpine:edge
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="1.0.1"
+LABEL version="1.1.0"
 
 EXPOSE 3030
 
@@ -40,23 +40,18 @@ RUN \
   dashing new icinga2 && \
   cd icinga2 && \
   echo -e "\ngem 'rest-client'\n" >> Gemfile && \
-  bundle   
-#  git clone --quiet https://github.com/Icinga/dashing-icinga2.git && \
-#  cd /opt/dashing-icinga2 && \
-#  bundle install
+  bundle
 
-#RUN \
-#  apk del --purge \
-#    git \
-#    build-base \
-#    ruby-dev && \
-#  rm -rf /var/cache/apk/*
+RUN \
+  apk del --purge \
+    git \
+    build-base \
+    ruby-dev && \
+  rm -rf /var/cache/apk/*
 
 ADD rootfs/ /
 
 WORKDIR /opt/dashing/icinga2
-
-# CMD "/bin/sh"
 
 CMD [ "/opt/startup.sh" ]
 

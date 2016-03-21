@@ -48,8 +48,8 @@ $api_username = api_user.to_s
 $api_password = api_pass.to_s
 $node_name    = Socket.gethostbyname(Socket.gethostname).first
 
-puts " api_url  : " + $api_url_base.to_s
-puts " node_name: " + $node_name.to_s
+puts "api_url  : " + $api_url_base.to_s
+puts "node_name: " + $node_name.to_s
 
 
 unless config["events"].nil?

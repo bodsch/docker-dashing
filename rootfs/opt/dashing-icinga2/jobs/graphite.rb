@@ -14,8 +14,9 @@ INTERVAL = '1m'
 # Job mappings. Define a name and set the metrics name from graphite
 
 job_mapping = {
-    'host1-load-1min' => '*.*.services.ping4.ping4.perfdata.rta.value',
-    'host2-load-1min' => '*.*.services.ping4.ping4.perfdata.pl.value'
+#  'host1-load-1min' => '*.*.services.ping4.ping4.perfdata.rta.value',
+#  'host2-load-1min' => '*.*.services.ping4.ping4.perfdata.pl.value',
+  'monitoring-ping-1min' => 'icinga2.*.services.ping4.ping4.perfdata.rta.value'
 }
 
 # Extend the float to allow better rounding. Too many digits makes a messy dashboard

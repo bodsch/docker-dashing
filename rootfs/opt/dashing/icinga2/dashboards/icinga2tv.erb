@@ -30,12 +30,15 @@ $(function() {
       <i class="icon-time icon-background"></i>
     </li>
     <li data-row="1" data-col="1" data-sizex="3" data-sizey="1">
-      <div data-id="chuck" data-view="Text" data-title="Team Facts">
+      <div data-id="chuck" data-view="Text" data-title="Team Facts"></div>
     </li>
-
+    <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
+      <div data-id="image" data-view="image" data-title="test-image"></div>
+    </li>
     <!-- head -->
 
     <!-- Stats -->
+<!--
     <li data-row="1" data-col="1" data-sizex="2" data-sizey="1">
       <div data-id="icinga-uptime" data-view="Simplemon" data-title="Uptime"></div>
     </li>
@@ -46,7 +49,7 @@ $(function() {
     <li data-row="1" data-col="3" data-sizex="1" data-sizey="1">
       <div data-id="icinga-execution-time" data-view="Simplemon" data-title="Execution Time"></div>
     </li>
-
+-->
     <!-- Down, Critical, Warning -->
     <li data-row="2" data-col="1" data-sizex="1" data-sizey="1">
       <div data-id="icinga-overview" data-view="Simplemon" data-title="Overview" data-url="http://localhost/icinga/monitoring/tactical" ></div>
@@ -62,10 +65,11 @@ $(function() {
     </li>
 
     <!-- graphite -->
-<!--
+
     <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
-        <div data-id="host1-load-1min" data-view="Graph" data-title="Host1 Load 1min" data-moreinfo="Last 4h"></div>
+        <div data-id="monitoring-ping-1min" data-view="Graph" data-title="Host1 Load 1min" data-moreinfo="Last 4h"></div>
     </li>
+<!--
     <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
         <div data-id="host2-load-1min" data-view="Meter" data-title="Host2 Load 1min" data-min="0" data-max="100" data-moreinfo="Last 4h"></div>
     </li>

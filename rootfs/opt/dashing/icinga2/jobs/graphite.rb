@@ -3,12 +3,33 @@
 require 'open-uri'
 require 'json'
 require 'date'
+require 'yaml'
+
+config_file = File.dirname(File.expand_path(__FILE__)) + '/../config/graphite.yml'
+
+config = YAML::load(File.open(config_file))
+
+config.inspect
+
+unless config["graphite"].nil?
+
+  server_name = config["graphite"]["server"]["name"]
+  server_port = config["graphite"]["server"]["port"]
+
+  puts "server: " + server_name.to_s
+  puts "port  : " + server_port.to_s
+else
+  puts "no valid configuration found"
+  exit
+end
+
+GRAPHITE_URL = "http://" + server_name.to_s + ":" + server_port.to_s
 
 # Pull data from Graphite and make available to Dashing Widgets
 # Heavily inspired from Thomas Van Machelen's "Bling dashboard article"
 
 # Set the graphite host and port (ip or hostname)
-GRAPHITE_URL = 'http://172.17.0.3:8080'
+# GRAPHITE_URL = 'http://172.17.0.3:8080'
 INTERVAL = '1m'
 
 # Job mappings. Define a name and set the metrics name from graphite
