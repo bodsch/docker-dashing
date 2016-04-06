@@ -1,21 +1,16 @@
 
-FROM alpine:edge
+FROM docker-alpine-base:latest
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="1.1.0"
+LABEL version="1.2.0"
 
 EXPOSE 3030
 
 # ---------------------------------------------------------------------------------------
 
 RUN \
-  apk --quiet update && \
-  apk --quiet upgrade
-
-RUN \
-  rm -Rf /var/run && \
-  ln -s /run /var/run
+  apk --quiet update
 
 RUN \
   apk --quiet add \
@@ -33,7 +28,6 @@ RUN \
   gem install --quiet dashing
 
 RUN \
-  mkdir /opt && \
   cd /opt && \
   git clone --quiet https://github.com/Shopify/dashing.git && \
   cd dashing && \
