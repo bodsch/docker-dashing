@@ -7,6 +7,11 @@ LABEL version="1.2.0"
 
 EXPOSE 3030
 
+ENV DASHBOARD=icinga2
+ENV JQ_VERSION=2.2.2
+ENV JQUI_VERSION=1.11.4
+ENV DASHING_VERSION=1.3.4
+
 # ---------------------------------------------------------------------------------------
 
 RUN \
@@ -21,31 +26,54 @@ RUN \
     ruby-irb \
     ruby-io-console \
     ruby-rdoc \
-    supervisor
+    libffi-dev
 
 RUN \
   gem install --quiet bundle && \
-  gem install --quiet dashing
+  gem install --quiet dashing -v ${DASHING_VERSION}
 
 RUN \
   cd /opt && \
   git clone --quiet https://github.com/Shopify/dashing.git && \
   cd dashing && \
-  dashing new icinga2 && \
-  cd icinga2 && \
-  echo -e "\ngem 'rest-client'\n" >> Gemfile && \
-  bundle
+  dashing new ${DASHBOARD} && \
+  cd ${DASHBOARD} && \
+  echo -e "\n" >> Gemfile && \
+  echo "gem 'rest-client'"     >> Gemfile && \
+  bundle update
+
+RUN \
+  ln -s $(ls -1 /usr/lib/ruby/gems) /usr/lib/ruby/gems/current && \
+  ln -s /usr/lib/ruby/gems/current/gems/dashing-${DASHING_VERSION} /usr/lib/ruby/gems/current/gems/dashing
+
+RUN \
+  curl --silent https://code.jquery.com/jquery-${JQ_VERSION}.min.js > /usr/lib/ruby/gems/current/gems/dashing/javascripts/jquery.js && \
+  curl --silent http://jqueryui.com/resources/download/jquery-ui-${JQUI_VERSION}.zip > /tmp/jquery-ui-${JQUI_VERSION}.zip && \
+  cd /tmp && \
+  unzip jquery-ui-${JQUI_VERSION}.zip && \
+  cp /tmp/jquery-ui-${JQUI_VERSION}/*.min.js     /usr/lib/ruby/gems/current/gems/dashing/javascripts/ && \
+  cp /tmp/jquery-ui-${JQUI_VERSION}/*.min.css    /usr/lib/ruby/gems/current/gems/dashing/templates/project/assets/stylesheets/ && \
+  cp /tmp/jquery-ui-${JQUI_VERSION}/images/*     /usr/lib/ruby/gems/current/gems/dashing/templates/project/assets/images/
+
+RUN \
+  rm -rf /tmp/jquery* && \
+  rm -rf /opt/dashing/${DASHBOARD}/jobs/buzzwords.rb && \
+  rm -rf /opt/dashing/${DASHBOARD}/jobs/convergence.rb && \
+  rm -rf /opt/dashing/${DASHBOARD}/jobs/sample.rb && \
+  rm -rf /opt/dashing/${DASHBOARD}/jobs/twitter.rb && \
+  rm -rf /opt/dashing/${DASHBOARD}/jobs/timeline.rb
 
 RUN \
   apk del --purge \
     git \
     build-base \
-    ruby-dev && \
+    ruby-dev \
+    libffi-dev && \
   rm -rf /var/cache/apk/*
 
 ADD rootfs/ /
 
-WORKDIR /opt/dashing/icinga2
+WORKDIR /opt/dashing/${DASHBOARD}
 
 CMD [ "/opt/startup.sh" ]
 

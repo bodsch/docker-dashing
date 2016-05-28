@@ -3,13 +3,7 @@ require 'dashing'
 
 configure do
   set :auth_token, '%AUTH_TOKEN%'
-  set :default_dashboard, 'icinga2tv'
-
-#  # icinga2 api config
-#  set :icinga2_api_url, 'https://%ICINGA2_HOST%:%ICINGA2_PORT%'
-#  #set :icinga2_api_nodename, 'clientcertificatecommonname'
-#  set :icinga2_api_username, '%ICINGA2_DASHING_APIUSER%'
-#  set :icinga2_api_password, '%ICINGA2_DASHING_APIPASS%'
+  set :default_dashboard, 'icinga2'
 
   helpers do
     def protected!
