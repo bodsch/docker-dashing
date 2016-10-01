@@ -1,20 +1,23 @@
-FROM bodsch/docker-alpine-base:3.4
+
+FROM bodsch/docker-alpine-base:1610-01
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="1.3.1"
+LABEL version="1.4.0"
 
 EXPOSE 3030
 
-ENV DASHBOARD=icinga2
-ENV JQ_VERSION=2.2.2
-ENV JQUI_VERSION=1.11.4
-ENV DASHING_VERSION=1.3.4
+ENV \
+  DASHBOARD=icinga2 \
+  JQ_VERSION=2.2.2 \
+  JQUI_VERSION=1.11.4 \
+  DASHING_VERSION=1.3.4
 
 # ---------------------------------------------------------------------------------------
 
 RUN \
   apk --quiet --no-cache update && \
+  apk --quiet --no-cache upgrade && \
   apk --quiet --no-cache add \
     build-base \
     git \
@@ -56,7 +59,7 @@ RUN \
     libffi-dev && \
   rm -rf /var/cache/apk/*
 
-ADD rootfs/ /
+COPY rootfs/ /
 
 WORKDIR /opt/dashing/${DASHBOARD}
 
