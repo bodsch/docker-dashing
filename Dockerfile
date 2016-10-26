@@ -1,9 +1,9 @@
 
-FROM bodsch/docker-alpine-base:1610-01
+FROM bodsch/docker-alpine-base:1610-02
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="1.4.0"
+LABEL version="1.4.1"
 
 EXPOSE 3030
 
@@ -16,9 +16,9 @@ ENV \
 # ---------------------------------------------------------------------------------------
 
 RUN \
-  apk --quiet --no-cache update && \
-  apk --quiet --no-cache upgrade && \
-  apk --quiet --no-cache add \
+  apk --no-cache update && \
+  apk --no-cache upgrade && \
+  apk --no-cache add \
     build-base \
     git \
     nodejs \
@@ -63,6 +63,6 @@ COPY rootfs/ /
 
 WORKDIR /opt/dashing/${DASHBOARD}
 
-CMD [ "/opt/startup.sh" ]
+CMD /opt/startup.sh
 
-# EOF
+# ---------------------------------------------------------------------------------------
