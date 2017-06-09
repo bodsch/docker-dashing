@@ -31,12 +31,8 @@ then
 
   if [ -f ${icinga_dashboard} ]
   then
-
-    sed -i \
-      -e 's/%ICINGAWEB_HOST%/'${ICINGAWEB_HOST}'/g' \
-      ${icinga_dashboard}
+    sed -i 's|%ICINGAWEB_HOST%|'${ICINGAWEB_HOST}'|g' ${icinga_dashboard}
   fi
-
 
   echo -e "\n"
   echo " ==================================================================="
