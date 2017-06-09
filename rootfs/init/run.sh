@@ -1,17 +1,18 @@
 #!/bin/sh
 
-initfile=/opt/run.init
-
 AUTH_TOKEN=${AUTH_TOKEN:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)}
-ICINGA2_HOST=${ICINGA2_HOST:-""}
-ICINGA2_PORT=${ICINGA2_PORT:-"5665"}
-ICINGA2_DASHING_APIUSER=${ICINGA2_DASHING_APIUSER:-"dashing"}
-ICINGA2_DASHING_APIPASS=${ICINGA2_DASHING_APIPASS:-"icinga"}
 
-GRAPHITE_HOST=${GRAPHITE_HOST:-""}
-GRAPHITE_PORT=${GRAPHITE_PORT:-8080}
+#ICINGA_HOST=${ICINGA2_HOST:-""}
+#ICINGA_PORT=${ICINGA2_PORT:-"5665"}
+#ICINGA_API_USER=${ICINGA_API_USER:-"dashing"}
+#ICINGA_API_PASSWORD=${ICINGA_API_PASSWORD:-"icinga"}
 
-DASHBOARD=${DASHBOARD:-icinga}
+ICINGAWEB_HOST=${ICINGAWEB_HOST:-"icingaweb2"}
+
+#GRAPHITE_HOST=${GRAPHITE_HOST:-""}
+#GRAPHITE_PORT=${GRAPHITE_PORT:-8080}
+
+DASHBOARD=${DASHBOARD:-icinga2}
 
 DASHING_PATH="/opt/${DASHBOARD}"
 CONFIG_FILE="${DASHING_PATH}/config.ru"
@@ -26,38 +27,16 @@ then
     sed -i 's,%AUTH_TOKEN%,'${AUTH_TOKEN}',g' ${CONFIG_FILE}
   fi
 
-#   if [ ! -z ${ICINGA2_HOST} ]
-#   then
-#
-#     if [ -f ${DASHING_PATH}/config/icinga2.json ]
-#     then
-#       sed -i \
-#         -e 's/%ICINGA2_HOST%/'${ICINGA2_HOST}'/g' \
-#         -e 's/%ICINGA2_PORT%/'${ICINGA2_PORT}'/g' \
-#         -e 's/%ICINGA2_DASHING_APIUSER%/'${ICINGA2_DASHING_APIUSER}'/g' \
-#         -e 's/%ICINGA2_DASHING_APIPASS%/'${ICINGA2_DASHING_APIPASS}'/g' \
-#         ${DASHING_PATH}/config/icinga2.json
-#     fi
-#
-#   else
-#     rm -f ${DASHING_PATH}/jobs/icinga2.rb
-#   fi
+  local icinga_dashboard="${DASHING_PATH}/dashboards/icinga2.erb"
 
-#   if [ ! -z ${GRAPHITE_HOST} ]
-#   then
-#
-#     if [ -f ${DASHING_PATH}/config/graphite.yml ]
-#     then
-#       sed -i \
-#         -e 's/%GRAPHITE_HOST%/'${GRAPHITE_HOST}'/g' \
-#         -e 's/%GRAPHITE_PORT%/'${GRAPHITE_PORT}'/g' \
-#         ${DASHING_PATH}/config/graphite.yml
-#     fi
-#   else
-#     rm -f ${DASHING_PATH}/jobs/graphite.rb
-#   fi
+  if [ -f ${icinga_dashboard} ]
+  then
 
-  touch ${initfile}
+    sed -i \
+      -e 's/%ICINGAWEB_HOST%/'${ICINGAWEB_HOST}'/g' \
+      ${icinga_dashboard}
+  fi
+
 
   echo -e "\n"
   echo " ==================================================================="

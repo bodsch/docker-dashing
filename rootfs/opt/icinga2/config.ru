@@ -6,6 +6,11 @@ configure do
   set :default_dashboard, 'icinga2'
   set :raise_errors, true
 
+  # we need this for running behind a proxy
+  #
+#  set :default_dashboard, 'dashing/coremedia'
+#  set :assets_prefix,     '/dashing/assets'
+
   # allow iframes e.g. icingaweb2
   # https://github.com/Shopify/dashing/issues/199
   # thx Sandro Lang
