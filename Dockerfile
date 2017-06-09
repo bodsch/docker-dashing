@@ -1,5 +1,5 @@
 
-FROM bodsch/docker-alpine-base:1610-02
+FROM alpine:3.6
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
@@ -8,61 +8,100 @@ LABEL version="1.4.1"
 EXPOSE 3030
 
 ENV \
-  DASHBOARD=icinga2 \
+  ALPINE_MIRROR="mirror1.hs-esslingen.de/pub/Mirrors" \
+  ALPINE_VERSION="v3.6" \
+  DASHBOARD="icinga2" \
   JQ_VERSION=2.2.2 \
   JQUI_VERSION=1.11.4 \
-  DASHING_VERSION=1.3.4
+  DASHING_VERSION=1.3.7 \
+  FONT_AWESOME=4.7.0
 
 # ---------------------------------------------------------------------------------------
 
+COPY build /
+
 RUN \
+  echo "http://${ALPINE_MIRROR}/alpine/${ALPINE_VERSION}/main"       > /etc/apk/repositories && \
+  echo "http://${ALPINE_MIRROR}/alpine/${ALPINE_VERSION}/community" >> /etc/apk/repositories && \
   apk --no-cache update && \
   apk --no-cache upgrade && \
+
   apk --no-cache add \
     build-base \
+    curl \
     git \
-    nodejs \
+    nodejs-current \
+    supervisor \
     ruby-dev \
     ruby-irb \
     ruby-io-console \
-    ruby-rdoc \
     libffi-dev && \
-  gem install --quiet bundle && \
-  gem install --quiet dashing -v ${DASHING_VERSION} && \
+
+  gem install --no-rdoc --no-ri bundle && \
+
   cd /opt && \
-  git clone --quiet https://github.com/Dashing-io/dashing.git && \
-  cd dashing && \
-  dashing new ${DASHBOARD} && \
-  cd ${DASHBOARD} && \
-  echo -e "\n" >> Gemfile && \
-  echo "gem 'rest-client'"     >> Gemfile && \
   bundle update && \
+
   ln -s $(ls -1 /usr/lib/ruby/gems) /usr/lib/ruby/gems/current && \
-  ln -s /usr/lib/ruby/gems/current/gems/dashing-${DASHING_VERSION} /usr/lib/ruby/gems/current/gems/dashing && \
-  curl --silent https://code.jquery.com/jquery-${JQ_VERSION}.min.js > /usr/lib/ruby/gems/current/gems/dashing/javascripts/jquery.js && \
-  curl --silent http://jqueryui.com/resources/download/jquery-ui-${JQUI_VERSION}.zip > /tmp/jquery-ui-${JQUI_VERSION}.zip && \
+  ln -s $(ls -d1 /usr/lib/ruby/gems/current/gems/smashing-*) /usr/lib/ruby/gems/current/gems/smashing && \
+
+  cd /opt && \
+  smashing new ${DASHBOARD} && \
+  cd ${DASHBOARD} && \
+  bundle install && \
+
+  rm -f /opt/${DASHBOARD}/jobs/twitter* && \
+  rm -f /opt/${DASHBOARD}/dashboards/* && \
+
+  cd /opt && \
+  git clone https://github.com/bodsch/ruby-icinga2.git && \
+  cd ruby-icinga2 && \
+  gem install --quiet --no-rdoc --no-ri ./icinga2-1.4.10.gem && \
+
+  cd /opt && \
+  curl \
+    --silent \
+    --output /usr/lib/ruby/gems/current/gems/smashing/javascripts/jquery.js \
+    https://code.jquery.com/jquery-${JQ_VERSION}.min.js && \
+
+  cd /opt && \
+  curl \
+    --silent \
+    --output /tmp/jquery-ui-${JQUI_VERSION}.zip \
+    http://jqueryui.com/resources/download/jquery-ui-${JQUI_VERSION}.zip && \
+
+  cd /opt && \
+  curl \
+    --silent \
+    --output /tmp/font-awesome-${FONT_AWESOME}.zip \
+    http://fontawesome.io/assets/font-awesome-${FONT_AWESOME}.zip && \
+
   cd /tmp && \
-  unzip jquery-ui-${JQUI_VERSION}.zip && \
-  cp /tmp/jquery-ui-${JQUI_VERSION}/*.min.js     /usr/lib/ruby/gems/current/gems/dashing/javascripts/ && \
-  cp /tmp/jquery-ui-${JQUI_VERSION}/*.min.css    /usr/lib/ruby/gems/current/gems/dashing/templates/project/assets/stylesheets/ && \
-  cp /tmp/jquery-ui-${JQUI_VERSION}/images/*     /usr/lib/ruby/gems/current/gems/dashing/templates/project/assets/images/ && \
+  unzip jquery-ui-${JQUI_VERSION}.zip > /dev/null && \
+  cp /tmp/jquery-ui-${JQUI_VERSION}/*.min.js     /usr/lib/ruby/gems/current/gems/smashing/javascripts/ && \
+  cp /tmp/jquery-ui-${JQUI_VERSION}/*.min.css    /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/stylesheets/ && \
+  cp /tmp/jquery-ui-${JQUI_VERSION}/images/*     /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/images/ && \
   rm -rf /tmp/jquery* && \
-  rm -rf /opt/dashing/${DASHBOARD}/jobs/buzzwords.rb && \
-  rm -rf /opt/dashing/${DASHBOARD}/jobs/convergence.rb && \
-  rm -rf /opt/dashing/${DASHBOARD}/jobs/sample.rb && \
-  rm -rf /opt/dashing/${DASHBOARD}/jobs/twitter.rb && \
-  rm -rf /opt/dashing/${DASHBOARD}/jobs/timeline.rb && \
+
+  cd /tmp && \
+  unzip font-awesome-${FONT_AWESOME}.zip > /dev/null && \
+  cp font-awesome-${FONT_AWESOME}/fonts/*   /opt/${DASHBOARD}/assets/fonts/ && \
+  cp font-awesome-${FONT_AWESOME}/css/*.css /opt/${DASHBOARD}/assets/stylesheets/ && \
+
   apk del --purge \
     git \
     build-base \
     ruby-dev \
     libffi-dev && \
-  rm -rf /var/cache/apk/*
+  rm -rf \
+    /tmp/* \
+    /var/cache/apk/* \
+    /opt/ruby-icinga2
 
 COPY rootfs/ /
 
-WORKDIR /opt/dashing/${DASHBOARD}
+WORKDIR /opt/${DASHBOARD}
 
-CMD /opt/startup.sh
+CMD [ "/init/run.sh" ]
 
 # ---------------------------------------------------------------------------------------

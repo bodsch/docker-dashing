@@ -2,46 +2,62 @@
 CONTAINER  := dashing
 IMAGE_NAME := docker-dashing
 
+.PHONY: build push shell run start stop rm release
 
 build:
-	docker \
-		build \
-		--rm --tag=$(IMAGE_NAME) .
+	docker build \
+		--tag=$(IMAGE_NAME) .
 	@echo Image tag: ${IMAGE_NAME}
 
+clean:
+	docker rm \
+		--force \
+		${CONTAINER}
+#	docker rmi \
+#		--force \
+#		${IMAGE_NAME}
+
+
 run:
-	docker \
-		run \
+	docker run \
+		--rm \
 		--detach \
 		--interactive \
 		--tty \
+		--publish=3030:3030 \
+		--env ICINGA_HOST="192.168.33.5" \
+		--env ICINGA_API_USER="root" \
+		--env ICINGA_API_PASSWORD="icinga" \
 		--hostname=${CONTAINER} \
 		--name=${CONTAINER} \
 		$(IMAGE_NAME)
 
 shell:
-	docker \
-		run \
+	docker run \
 		--rm \
 		--interactive \
+		--publish=3030:3030 \
+		--env ICINGA_HOST="192.168.33.5" \
+		--env ICINGA_API_USER="root" \
+		--env ICINGA_API_PASSWORD="icinga" \
 		--tty \
 		--hostname=${CONTAINER} \
 		--name=${CONTAINER} \
+		--entrypoint '' \
 		$(IMAGE_NAME) \
-		/bin/bash
+		/bin/sh
 
 exec:
 	docker exec \
 		--interactive \
 		--tty \
 		${CONTAINER} \
-		/bin/bash
+		/bin/sh
 
 stop:
-	docker \
-		kill ${CONTAINER}
+	docker kill ${CONTAINER}
 
 history:
-	docker \
-		history ${IMAGE_NAME}
+	docker history ${IMAGE_NAME}
 
+default: build
