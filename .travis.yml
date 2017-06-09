@@ -1,0 +1,12 @@
+sudo: required
+
+services:
+  - docker
+
+install:
+  - docker build --tag bodsch/docker-dashing .
+  - docker run --detach --name dashing bodsch/docker-dashing
+
+script:
+  - docker ps | grep -q dashing
+
