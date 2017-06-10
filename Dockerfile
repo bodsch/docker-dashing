@@ -3,7 +3,7 @@ FROM alpine:3.6
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="1.4.1"
+LABEL version="1.5.0"
 
 EXPOSE 3030
 

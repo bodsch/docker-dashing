@@ -13,10 +13,6 @@ clean:
 	docker rm \
 		--force \
 		${CONTAINER}
-#	docker rmi \
-#		--force \
-#		${IMAGE_NAME}
-
 
 run:
 	docker run \
@@ -28,6 +24,7 @@ run:
 		--env ICINGA_HOST="192.168.33.5" \
 		--env ICINGA_API_USER="root" \
 		--env ICINGA_API_PASSWORD="icinga" \
+		--env ICINGAWEB_URL="http://192.168.33.5/icingaweb2" \
 		--hostname=${CONTAINER} \
 		--name=${CONTAINER} \
 		$(IMAGE_NAME)
@@ -40,6 +37,7 @@ shell:
 		--env ICINGA_HOST="192.168.33.5" \
 		--env ICINGA_API_USER="root" \
 		--env ICINGA_API_PASSWORD="icinga" \
+		--env ICINGAWEB_URL="http://192.168.33.5/icingaweb2" \
 		--tty \
 		--hostname=${CONTAINER} \
 		--name=${CONTAINER} \
