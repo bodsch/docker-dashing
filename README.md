@@ -1,19 +1,24 @@
 docker-dashing
 ==============
 
-Run Dashing dashboard inside Docker.
+Minimal Image with Smashing (https://github.com/Smashing/smashing)
 
-Build an own icinga2 Dashboard.
+Includes an update of
+ - jquery to v2.2.2
+ - jquerui to v1.11.4
+ - Font-Awesome to 4.7.0
 
-Use Dashing Version 1.3.4 from https://github.com/Dashing-io
+# Status
 
-Includes an update of jquery to v2.2.2 an jquerui to v1.11.4
+[![Docker Pulls](https://img.shields.io/docker/pulls/bodsch/docker-smashing.svg?branch=1706-02)][hub]
+[![Image Size](https://images.microbadger.com/badges/image/bodsch/docker-smashing.svg?branch=1706-02)][microbadger]
+[![Build Status](https://travis-ci.org/bodsch/docker-smashing.svg?branch=1706-02)][travis]
 
-Usage
------
+[hub]: https://hub.docker.com/r/bodsch/docker-smashing/
+[microbadger]: https://microbadger.com/images/bodsch/docker-smashing
+[travis]: https://travis-ci.org/bodsch/docker-smashing
 
-A few scripts exist for convenience:
+# Build
 
-* _build.sh_ -- create the Container
-* _run.sh_ -- after building, run this to show the basic demo by browsing to ```localhost:3030```
+Your can use the included Makefile.
 

@@ -1,61 +1,80 @@
 
-CONTAINER  := dashing
-IMAGE_NAME := docker-dashing
+include env_make
+
+NS       = bodsch
+VERSION ?= latest
+
+REPO     = docker-smashing
+NAME     = smashing
+INSTANCE = default
 
 .PHONY: build push shell run start stop rm release
 
+
 build:
 	docker build \
-		--tag=$(IMAGE_NAME) .
-	@echo Image tag: ${IMAGE_NAME}
+		--rm \
+		--tag $(NS)/$(REPO):$(VERSION) .
 
 clean:
-	docker rm \
+	docker rmi \
 		--force \
-		${CONTAINER}
+		$(NS)/$(REPO):$(VERSION)
 
-run:
-	docker run \
-		--rm \
-		--detach \
-		--interactive \
-		--tty \
-		--publish=3030:3030 \
-		--env ICINGA_HOST="192.168.33.5" \
-		--env ICINGA_API_USER="root" \
-		--env ICINGA_API_PASSWORD="icinga" \
-		--env ICINGAWEB_URL="http://192.168.33.5/icingaweb2" \
-		--hostname=${CONTAINER} \
-		--name=${CONTAINER} \
-		$(IMAGE_NAME)
+history:
+	docker history \
+		$(NS)/$(REPO):$(VERSION)
+
+push:
+	docker push \
+		$(NS)/$(REPO):$(VERSION)
 
 shell:
 	docker run \
 		--rm \
+		--name $(NAME)-$(INSTANCE) \
 		--interactive \
-		--publish=3030:3030 \
-		--env ICINGA_HOST="192.168.33.5" \
-		--env ICINGA_API_USER="root" \
-		--env ICINGA_API_PASSWORD="icinga" \
-		--env ICINGAWEB_URL="http://192.168.33.5/icingaweb2" \
 		--tty \
-		--hostname=${CONTAINER} \
-		--name=${CONTAINER} \
-		--entrypoint '' \
-		$(IMAGE_NAME) \
+		$(PORTS) \
+		$(VOLUMES) \
+		$(ENV) \
+		$(NS)/$(REPO):$(VERSION) \
 		/bin/sh
+
+run:
+	docker run \
+		--rm \
+		--name $(NAME)-$(INSTANCE) \
+		$(PORTS) \
+		$(VOLUMES) \
+		$(ENV) \
+		$(NS)/$(REPO):$(VERSION)
 
 exec:
 	docker exec \
 		--interactive \
 		--tty \
-		${CONTAINER} \
+		$(NAME)-$(INSTANCE) \
 		/bin/sh
 
-stop:
-	docker kill ${CONTAINER}
+start:
+	docker run \
+		--detach \
+		--name $(NAME)-$(INSTANCE) \
+		$(PORTS) \
+		$(VOLUMES) \
+		$(ENV) \
+		$(NS)/$(REPO):$(VERSION)
 
-history:
-	docker history ${IMAGE_NAME}
+stop:
+	docker stop \
+		$(NAME)-$(INSTANCE)
+
+rm:
+	docker rm \
+		$(NAME)-$(INSTANCE)
+
+release: build
+	make push -e VERSION=$(VERSION)
 
 default: build
