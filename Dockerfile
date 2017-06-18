@@ -7,7 +7,7 @@ ENV \
   ALPINE_MIRROR="mirror1.hs-esslingen.de/pub/Mirrors" \
   ALPINE_VERSION="v3.6" \
   TERM=xterm \
-  BUILD_DATE="2017-06-10" \
+  BUILD_DATE="2017-06-18" \
   JQ_VERSION=2.2.2 \
   JQUI_VERSION=1.11.4 \
   FONT_AWESOME=4.7.0
@@ -75,6 +75,29 @@ RUN \
     --silent \
     --output /tmp/font-awesome-${FONT_AWESOME}.zip \
     http://fontawesome.io/assets/font-awesome-${FONT_AWESOME}.zip && \
+
+  # update jquery.knob.js
+  #
+  cd /tmp && \
+  git clone https://github.com/aterrien/jQuery-Knob.git && \
+  mv jQuery-Knob/js/jquery.knob.js /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/javascripts/jquery.knob_new.js && \
+
+  # update rickshaw
+  #
+  cd /tmp && \
+  git clone https://github.com/shutterstock/rickshaw.git && \
+  mv /tmp/rickshaw/rickshaw.min.js /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/javascripts/ && \
+
+  # update d3
+  #
+  cd /tmp && \
+  curl \
+    --silent \
+    --location \
+    --output /tmp/d3.zip \
+    https://github.com/d3/d3/releases/download/v4.9.1/d3.zip && \
+  unzip d3.zip && \
+  mv d3.*js /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/javascripts/ && \
 
   cd /tmp && \
   unzip jquery-ui-${JQUI_VERSION}.zip > /dev/null && \
