@@ -7,7 +7,7 @@ ENV \
   ALPINE_MIRROR="mirror1.hs-esslingen.de/pub/Mirrors" \
   ALPINE_VERSION="v3.6" \
   TERM=xterm \
-  BUILD_DATE="2017-06-18" \
+  BUILD_DATE="2017-07-08" \
   JQ_VERSION=2.2.2 \
   JQUI_VERSION=1.11.4 \
   FONT_AWESOME=4.7.0
@@ -15,7 +15,7 @@ ENV \
 EXPOSE 3030
 
 LABEL \
-  version="1706-02" \
+  version="1707-27.1" \
   org.label-schema.build-date=${BUILD_DATE} \
   org.label-schema.name="Smashing Docker Image" \
   org.label-schema.description="Inofficial Smashing Docker Image" \
@@ -34,10 +34,9 @@ COPY build /
 RUN \
   echo "http://${ALPINE_MIRROR}/alpine/${ALPINE_VERSION}/main"       > /etc/apk/repositories && \
   echo "http://${ALPINE_MIRROR}/alpine/${ALPINE_VERSION}/community" >> /etc/apk/repositories && \
-  apk update  --quiet --no-cache && \
-  apk upgrade --quiet --no-cache && \
-
-  apk add --quiet --no-cache  \
+  apk update  --no-cache && \
+  apk upgrade --no-cache && \
+  apk add --no-cache  \
     build-base \
     curl \
     git \
@@ -46,15 +45,11 @@ RUN \
     ruby-dev \
     ruby-io-console \
     libffi-dev && \
-
   gem install --no-rdoc --no-ri --quiet bundle && \
-
   cd /opt && \
   bundle update --quiet && \
-
   ln -s $(ls -1 /usr/lib/ruby/gems) /usr/lib/ruby/gems/current && \
   ln -s $(ls -d1 /usr/lib/ruby/gems/current/gems/smashing-*) /usr/lib/ruby/gems/current/gems/smashing && \
-
   # update jquery
   #
   curl \
