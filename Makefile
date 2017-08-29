@@ -4,8 +4,8 @@ include env_make
 NS       = bodsch
 VERSION ?= latest
 
-REPO     = docker-smashing
-NAME     = smashing
+REPO     = docker-dashing
+NAME     = dashing
 INSTANCE = default
 
 .PHONY: build push shell run start stop rm release

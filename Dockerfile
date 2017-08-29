@@ -20,7 +20,7 @@ LABEL \
   org.label-schema.name="Smashing Docker Image" \
   org.label-schema.description="Inofficial Smashing Docker Image" \
   org.label-schema.url="https://github.com/Smashing/smashing" \
-  org.label-schema.vcs-url="https://github.com/bodsch/docker-smashing" \
+  org.label-schema.vcs-url="https://github.com/bodsch/docker-dashing" \
   org.label-schema.vendor="Bodo Schulz" \
   org.label-schema.version=${ICINGA_VERSION} \
   org.label-schema.schema-version="1.0" \
