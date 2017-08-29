@@ -10,9 +10,9 @@ Includes an update of
 
 # Status
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/bodsch/docker-smashing.svg?branch=1706-02)][hub]
-[![Image Size](https://images.microbadger.com/badges/image/bodsch/docker-smashing.svg?branch=1706-02)][microbadger]
-[![Build Status](https://travis-ci.org/bodsch/docker-smashing.svg?branch=1706-02)][travis]
+[![Docker Pulls](https://img.shields.io/docker/pulls/bodsch/docker-smashing.svg?branch=1708-35)][hub]
+[![Image Size](https://images.microbadger.com/badges/image/bodsch/docker-smashing.svg?branch=1708-35)][microbadger]
+[![Build Status](https://travis-ci.org/bodsch/docker-smashing.svg?branch=1708-35)][travis]
 
 [hub]: https://hub.docker.com/r/bodsch/docker-smashing/
 [microbadger]: https://microbadger.com/images/bodsch/docker-smashing

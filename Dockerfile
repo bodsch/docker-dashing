@@ -7,7 +7,7 @@ ENV \
   ALPINE_MIRROR="mirror1.hs-esslingen.de/pub/Mirrors" \
   ALPINE_VERSION="v3.6" \
   TERM=xterm \
-  BUILD_DATE="2017-07-08" \
+  BUILD_DATE="2017-08-29" \
   JQ_VERSION=2.2.2 \
   JQUI_VERSION=1.11.4 \
   FONT_AWESOME=4.7.0
@@ -15,7 +15,7 @@ ENV \
 EXPOSE 3030
 
 LABEL \
-  version="1707-27.1" \
+  version="1708-35" \
   org.label-schema.build-date=${BUILD_DATE} \
   org.label-schema.name="Smashing Docker Image" \
   org.label-schema.description="Inofficial Smashing Docker Image" \
@@ -91,7 +91,7 @@ RUN \
     --location \
     --output /tmp/d3.zip \
     https://github.com/d3/d3/releases/download/v4.9.1/d3.zip && \
-  unzip d3.zip && \
+  unzip d3.zip > /dev/null && \
   mv d3.*js /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/javascripts/ && \
 
   cd /tmp && \
