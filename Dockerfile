@@ -7,7 +7,7 @@ ENV \
   ALPINE_MIRROR="mirror1.hs-esslingen.de/pub/Mirrors" \
   ALPINE_VERSION="v3.6" \
   TERM=xterm \
-  BUILD_DATE="2017-08-29" \
+  BUILD_DATE="2017-09-26" \
   JQ_VERSION=2.2.2 \
   JQUI_VERSION=1.11.4 \
   FONT_AWESOME=4.7.0
@@ -15,12 +15,12 @@ ENV \
 EXPOSE 3030
 
 LABEL \
-  version="1708-35" \
+  version="1709" \
   org.label-schema.build-date=${BUILD_DATE} \
-  org.label-schema.name="Smashing Docker Image" \
-  org.label-schema.description="Inofficial Smashing Docker Image" \
+  org.label-schema.name="Dashing Docker Image" \
+  org.label-schema.description="Inofficial Dashing Docker Image" \
   org.label-schema.url="https://github.com/Smashing/smashing" \
-  org.label-schema.vcs-url="https://github.com/bodsch/docker-smashing" \
+  org.label-schema.vcs-url="https://github.com/bodsch/docker-dashing" \
   org.label-schema.vendor="Bodo Schulz" \
   org.label-schema.version=${ICINGA_VERSION} \
   org.label-schema.schema-version="1.0" \
