@@ -3,7 +3,7 @@ FROM alpine:3.7
 
 ENV \
   TERM=xterm \
-  BUILD_DATE="2017-12-22" \
+  BUILD_DATE="2018-01-02" \
   JQ_VERSION=2.2.2 \
   JQUI_VERSION=1.11.4 \
   FONT_AWESOME=4.7.0
@@ -11,7 +11,7 @@ ENV \
 EXPOSE 3030
 
 LABEL \
-  version="1712" \
+  version="1801" \
   maintainer="Bodo Schulz <bodo@boone-schulz.de>" \
   org.label-schema.build-date=${BUILD_DATE} \
   org.label-schema.name="Dashing Docker Image" \
