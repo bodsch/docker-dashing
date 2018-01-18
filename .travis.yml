@@ -4,9 +4,16 @@ services:
   - docker
 
 install:
-  - docker build --tag bodsch/docker-smashing .
-  - docker run --detach --name smashing bodsch/docker-smashing
+  - docker build --tag bodsch/docker-dashing .
+  - docker run --detach --name dashing bodsch/docker-dashing
 
 script:
-  - docker ps | grep -q smashing
+  - docker ps | grep -q dashing
 
+after_success:
+  - |
+    [ "${TRAVIS_BRANCH}" == "master" ] && curl \
+      --request POST \
+      --header "Content-Type: application/json"  \
+      --data '{"source_type":"Branch","source_name":"master"}' \
+      https://registry.hub.docker.com/u/bodsch/docker-dashing/trigger/${DOCKER_HUB_TOKEN}/
