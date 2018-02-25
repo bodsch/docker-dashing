@@ -3,10 +3,12 @@ FROM alpine:3.7
 
 ENV \
   TERM=xterm \
-  BUILD_DATE="2018-01-18" \
-  JQ_VERSION=2.2.2 \
-  JQUI_VERSION=1.11.4 \
-  FONT_AWESOME=4.7.0
+  BUILD_DATE="2018-02-24" \
+  D3_VERSION=4.13.0 \
+  JQ_VERSION=2.2.4 \
+  JQUI_VERSION=1.12.1 \
+  FONT_AWESOME=4.7.0 \
+  TZ='Europe/Berlin'
 
 EXPOSE 3030
 
@@ -37,7 +39,8 @@ RUN \
     curl \
     nodejs \
     ruby \
-    ruby-io-console && \
+    ruby-io-console \
+    tzdata && \
   echo 'gem: --no-document' >> /etc/gemrc && \
   gem install --no-rdoc --no-ri --quiet bundle && \
   cd /opt && \
@@ -55,7 +58,7 @@ RUN \
   curl \
     --silent \
     --output /tmp/font-awesome-${FONT_AWESOME}.zip \
-    http://fontawesome.io/assets/font-awesome-${FONT_AWESOME}.zip && \
+    https://fontawesome.com/v${FONT_AWESOME}/assets/font-awesome-${FONT_AWESOME}.zip && \
   cd /tmp && \
   git clone https://github.com/aterrien/jQuery-Knob.git && \
   mv jQuery-Knob/js/jquery.knob.js /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/javascripts/jquery.knob_new.js && \
@@ -67,7 +70,7 @@ RUN \
     --silent \
     --location \
     --output /tmp/d3.zip \
-    https://github.com/d3/d3/releases/download/v4.9.1/d3.zip && \
+    https://github.com/d3/d3/releases/download/v${D3_VERSION}/d3.zip && \
   unzip d3.zip > /dev/null && \
   mv d3.*js /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/javascripts/ && \
   cd /tmp && \
