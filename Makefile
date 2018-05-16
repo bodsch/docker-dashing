@@ -8,12 +8,27 @@ REPO     = docker-dashing
 NAME     = dashing
 INSTANCE = default
 
-.PHONY: build push shell run start stop rm release
+BUILD_DATE := $(shell date +%Y-%m-%d)
+BUILD_VERSION := $(shell date +%y%m)
 
+D3_VERSION ?= 4.13.0
+JQ_VERSION ?= 2.2.4
+JQUI_VERSION ?= 1.12.1
+FONT_AWESOME ?= 4.7.0
+
+
+.PHONY: build push shell run start stop rm release
 
 build:
 	docker build \
-		--rm \
+		--force-rm \
+		--compress \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
+		--build-arg D3_VERSION=$(D3_VERSION) \
+		--build-arg JQ_VERSION=$(JQ_VERSION) \
+		--build-arg JQUI_VERSION=$(JQUI_VERSION) \
+		--build-arg FONT_AWESOME=$(FONT_AWESOME) \
 		--tag $(NS)/$(REPO):$(VERSION) .
 
 clean:

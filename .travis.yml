@@ -3,17 +3,17 @@ sudo: required
 services:
   - docker
 
-install:
-  - docker build --tag bodsch/docker-dashing .
-  - docker run --detach --name dashing bodsch/docker-dashing
+env:
+  global:
+    - BUILD_DATE=$(date +"%Y-%m-%d")
+    - BUILD_VERSION=$(date +"%y%m")
 
-script:
-  - docker ps | grep -q dashing
-
-after_success:
-  - |
-    [ "${TRAVIS_BRANCH}" == "master" ] && curl \
-      --request POST \
-      --header "Content-Type: application/json"  \
-      --data '{"source_type":"Branch","source_name":"master"}' \
-      https://registry.hub.docker.com/u/bodsch/docker-dashing/trigger/${DOCKER_HUB_TOKEN}/
+jobs:
+  include:
+    - stage: build, test and push docker image
+      script:
+        - make
+        - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+        - docker push ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION}
+        - docker tag ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION} ${DOCKER_USERNAME}/docker-dashing:latest
+        - docker push ${DOCKER_USERNAME}/docker-dashing:latest
