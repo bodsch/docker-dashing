@@ -29,20 +29,20 @@ build:
 		--build-arg JQ_VERSION=$(JQ_VERSION) \
 		--build-arg JQUI_VERSION=$(JQUI_VERSION) \
 		--build-arg FONT_AWESOME=$(FONT_AWESOME) \
-		--tag $(NS)/$(REPO):$(VERSION) .
+		--tag $(NS)/$(REPO):$(BUILD_VERSION) .
 
 clean:
 	docker rmi \
 		--force \
-		$(NS)/$(REPO):$(VERSION)
+		$(NS)/$(REPO):$(BUILD_VERSION)
 
 history:
 	docker history \
-		$(NS)/$(REPO):$(VERSION)
+		$(NS)/$(REPO):$(BUILD_VERSION)
 
 push:
 	docker push \
-		$(NS)/$(REPO):$(VERSION)
+		$(NS)/$(REPO):$(BUILD_VERSION)
 
 shell:
 	docker run \
@@ -53,7 +53,7 @@ shell:
 		$(PORTS) \
 		$(VOLUMES) \
 		$(ENV) \
-		$(NS)/$(REPO):$(VERSION) \
+		$(NS)/$(REPO):$(BUILD_VERSION) \
 		/bin/sh
 
 run:
@@ -63,7 +63,7 @@ run:
 		$(PORTS) \
 		$(VOLUMES) \
 		$(ENV) \
-		$(NS)/$(REPO):$(VERSION)
+		$(NS)/$(REPO):$(BUILD_VERSION)
 
 exec:
 	docker exec \
@@ -79,7 +79,7 @@ start:
 		$(PORTS) \
 		$(VOLUMES) \
 		$(ENV) \
-		$(NS)/$(REPO):$(VERSION)
+		$(NS)/$(REPO):$(BUILD_VERSION)
 
 stop:
 	docker stop \
@@ -90,6 +90,6 @@ rm:
 		$(NAME)-$(INSTANCE)
 
 release: build
-	make push -e VERSION=$(VERSION)
+	make push -e VERSION=$(BUILD_VERSION)
 
 default: build
