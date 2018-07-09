@@ -1,5 +1,5 @@
 
-FROM alpine:latest as builder
+FROM alpine:3.8
 
 EXPOSE 3030
 
@@ -91,17 +91,8 @@ RUN \
   unzip font-awesome-${FONT_AWESOME}.zip > /dev/null && \
   cp font-awesome-${FONT_AWESOME}/fonts/*   /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/fonts/ && \
   cp font-awesome-${FONT_AWESOME}/css/*.css /usr/lib/ruby/gems/current/gems/smashing/templates/project/assets/stylesheets/ && \
-  find /usr/lib/node_modules/npm/node_modules \
-    \( \
-      -iname "*.md" \
-      -o -iname "LICENSE" \
-      -o -iname "AUTHORS" \
-      -o -iname "Makefile" \
-      -o -iname "*.markdown" \
-    \) \
-    -delete && \
   apk del --quiet --purge .build-deps && \
-  rm -rf \
+ rm -rf \
     /tmp/* \
     /build \
     /var/cache/apk/* \

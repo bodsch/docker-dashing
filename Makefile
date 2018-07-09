@@ -8,13 +8,12 @@ REPO     = docker-dashing
 NAME     = dashing
 INSTANCE = default
 
-BUILD_DATE := $(shell date +%Y-%m-%d)
+BUILD_DATE    := $(shell date +%Y-%m-%d)
 BUILD_VERSION := $(shell date +%y%m)
-
-D3_VERSION ?= 4.13.0
-JQ_VERSION ?= 2.2.4
-JQUI_VERSION ?= 1.12.1
-FONT_AWESOME ?= 4.7.0
+D3_VERSION    ?= 4.13.0
+JQ_VERSION    ?= 2.2.4
+JQUI_VERSION  ?= 1.12.1
+FONT_AWESOME  ?= 4.7.0
 
 
 .PHONY: build push shell run start stop rm release
