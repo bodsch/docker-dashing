@@ -14,6 +14,10 @@ jobs:
       script:
         - make
         - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-        - docker push ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION}
-        - docker tag ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION} ${DOCKER_USERNAME}/docker-dashing:latest
+        #
+        - docker tag  ${USER}/dashing:latest ${DOCKER_USERNAME}/docker-dashing:latest
         - docker push ${DOCKER_USERNAME}/docker-dashing:latest
+        #
+        - docker tag  ${DOCKER_USERNAME}/docker-dashing:latest ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION}
+        - docker push ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION}
+        - docker logout
