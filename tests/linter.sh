@@ -10,7 +10,3 @@ if ! [ -x "$(command -v hadolint)" ]; then
 fi
 
 hadolint Dockerfile
-#shellcheck rootfs/init/*.sh \
-#  --shell=sh \
-#  --external-sources \
-#  --exclude=SC1091,SC2181,SC2046

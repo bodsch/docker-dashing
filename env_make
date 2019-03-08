@@ -1,7 +1,0 @@
-PORTS =
-#  --publish 3030:3030
-
-VOLUMES = \
-  --volume /var/log/docker:/var/log
-
-ENV =

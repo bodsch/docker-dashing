@@ -1,5 +1,5 @@
 
-FROM alpine:3.8 as stage1
+FROM alpine:3.9 as stage1
 
 ARG D3_VERSION
 ARG JQ_VERSION
@@ -68,7 +68,7 @@ RUN \
 
 # ---------------------------------------------------------------------------------------
 
-FROM alpine:3.8
+FROM alpine:3.9
 
 EXPOSE 3030
 
@@ -83,7 +83,6 @@ ENV \
 
 WORKDIR /opt
 
-COPY build /
 # hadolint ignore=SC2046,DL3017,DL3018
 RUN \
   apk update  --quiet && \
@@ -99,6 +98,11 @@ RUN \
     ruby-io-console \
     tzdata && \
   echo 'gem: --no-document' >> /etc/gemrc && \
+  echo -e "source 'https://rubygems.org'\\n \
+gem 'smashing', '~> 1.1'\\n\
+gem 'puma', '~> 3.12'\\n\
+gem 'json', '~> 2.1'\\n\
+gem 'etc', '~> 1.0'\\n" > /opt/Gemfile && \
   gem install --no-rdoc --no-ri --quiet bundle && \
   bundle update --quiet && \
   ln -s $(ls -1 /usr/lib/ruby/gems)                          /usr/lib/ruby/gems/current && \
