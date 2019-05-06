@@ -1,23 +1,19 @@
 sudo: required
-
 services:
-  - docker
-
+- docker
 env:
   global:
-    - BUILD_DATE=$(date +"%Y-%m-%d")
-    - BUILD_VERSION=$(date +"%y%m")
-
+  - BUILD_DATE=$(date +"%Y-%m-%d")
+  - BUILD_VERSION=$(date +"%y%m")
+  - secure: b404faWyto/pxfT10supRp1XFA9AjUA8O7S2nycxhPJZAaq5NxGpy/kp2wJ3hlCxHOqdP0/ZyIW0R7bCElRs+Fe4O+WFmJawDUjJAOR7B6s+cvY6/WH++GbDL9iyEhSVQfHzCbGgciZKbo9pNpM3iuQZ8nOTP/DK5Jy+8qvE/Flord6CGbdfQLbiALglUPQ6kdTK+B2jtGFrbcxRqWX0OqgTm5Tlx07rQvsqeJW/IDPTYyDeoGe4jA1WAVPPOqysrK1SQNrOofWHntw6U3zPYdZJf8hyqiWVIy9qDpTEXipvsWnM41Y1+XuWQFNnYJ9aRp33TEUz6Bpu3MTmO236PxJHkVFvqu/KlrjS7ugWyQJDXErXa6LTQXvkQQy74gR/D3NKqlEtHju1FWeM79ELNmEaWp/ML+Hf8Wolh+ifmKShvycqzwxUbAVqbVDJlcJFoQetcuB6/gKYumOra08ZX+wMLbHhDiD7g7C+hEbnIrs0niJHbswN0azQOUjWqNdTKL/BL/YcJMXi+pRyni3OzrSQYrn6DxrlLegK1iIUYJrVlOMpjdgZEVX2N7NMTgHfNalnCJJLytXMX87H9ZSUgneuajtA6cOefuyLMPtOyWGUph5NWF2OFI/XuQ2YWsCfC7sK3KcwkWPx4EJH3dyyBSbwzbHiWYZetquficERMJM=
 jobs:
   include:
-    - stage: build, test and push docker image
-      script:
-        - make
-        - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-        #
-        - docker tag  ${USER}/dashing:latest ${DOCKER_USERNAME}/docker-dashing:latest
-        - docker push ${DOCKER_USERNAME}/docker-dashing:latest
-        #
-        - docker tag  ${DOCKER_USERNAME}/docker-dashing:latest ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION}
-        - docker push ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION}
-        - docker logout
+  - stage: build, test and push docker image
+    script:
+    - make
+    - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+    - docker tag  ${USER}/dashing:latest ${DOCKER_USERNAME}/docker-dashing:latest
+    - docker push ${DOCKER_USERNAME}/docker-dashing:latest
+    - docker tag  ${DOCKER_USERNAME}/docker-dashing:latest ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION}
+    - docker push ${DOCKER_USERNAME}/docker-dashing:${BUILD_VERSION}
+    - docker logout
