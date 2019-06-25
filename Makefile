@@ -4,7 +4,7 @@ export DOCKER_NAME_SPACE := ${USER}
 export DOCKER_VERSION    ?= latest
 export BUILD_DATE        := $(shell date +%Y-%m-%d)
 export BUILD_VERSION     := $(shell date +%y%m)
-export BUILD_TYPE        ?= stable
+
 export SMASHING_VERSION  ?= 1.1.0
 export D3_VERSION        ?= 4.13.0
 export JQ_VERSION        ?= 2.2.4

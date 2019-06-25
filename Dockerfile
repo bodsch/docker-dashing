@@ -20,6 +20,7 @@ RUN \
   echo "download jquery ${JQ_VERSION}" && \
   curl \
     --silent \
+    --location \
     --output /tmp/jquery.js \
     "https://code.jquery.com/jquery-${JQ_VERSION}.min.js"
 
@@ -27,13 +28,15 @@ RUN \
   echo "download jquery-ui ${JQUI_VERSION}" && \
   curl \
     --silent \
+    --location \
     --output "jquery-ui-${JQUI_VERSION}.zip" \
-     "http://jqueryui.com/resources/download/jquery-ui-${JQUI_VERSION}.zip"
+     "https://jqueryui.com/resources/download/jquery-ui-${JQUI_VERSION}.zip"
 
 RUN \
   echo "download fontawesome ${FONT_AWESOME}" && \
   curl \
     --silent \
+    --location \
     --output "font-awesome-${FONT_AWESOME}.zip" \
     "https://fontawesome.com/v${FONT_AWESOME}/assets/font-awesome-${FONT_AWESOME}.zip"
 
@@ -72,6 +75,7 @@ FROM alpine:3.9
 
 EXPOSE 3030
 
+ARG VCS_REF
 ARG BUILD_DATE
 ARG BUILD_VERSION
 

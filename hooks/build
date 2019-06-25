@@ -16,7 +16,6 @@ docker build \
   --build-arg VCS_REF=${GIT_SHA1} \
   --build-arg BUILD_DATE=${BUILD_DATE} \
   --build-arg BUILD_VERSION=${BUILD_VERSION} \
-  --build-arg BUILD_TYPE=${BUILD_TYPE} \
   --build-arg D3_VERSION=${D3_VERSION} \
   --build-arg JQ_VERSION=${JQ_VERSION} \
   --build-arg JQUI_VERSION=${JQUI_VERSION} \
