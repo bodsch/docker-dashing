@@ -1,5 +1,5 @@
 
-FROM alpine:3.9 as stage1
+FROM alpine:3.10 as stage1
 
 ARG D3_VERSION
 ARG JQ_VERSION
@@ -71,7 +71,7 @@ RUN \
 
 # ---------------------------------------------------------------------------------------
 
-FROM alpine:3.9
+FROM alpine:3.10
 
 EXPOSE 3030
 
