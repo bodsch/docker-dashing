@@ -1,5 +1,5 @@
 
-FROM alpine:3.10 as stage1
+FROM alpine:3.11 as stage1
 
 ARG D3_VERSION
 ARG JQ_VERSION
@@ -71,7 +71,7 @@ RUN \
 
 # ---------------------------------------------------------------------------------------
 
-FROM alpine:3.10
+FROM alpine:3.11
 
 EXPOSE 3030
 
@@ -87,7 +87,7 @@ ENV \
 
 WORKDIR /opt
 
-# hadolint ignore=SC2046,DL3017,DL3018
+# hadolint ignore=SC2039,SC2046,DL3017,DL3018,DL3028
 RUN \
   apk update  --quiet && \
   apk upgrade --quiet && \
@@ -107,7 +107,7 @@ gem 'smashing', '~> 1.1'\\n\
 gem 'puma', '~> 3.12'\\n\
 gem 'json', '~> 2.1'\\n\
 gem 'etc', '~> 1.0'\\n" > /opt/Gemfile && \
-  gem install --no-rdoc --no-ri --quiet bundle && \
+  gem install bundle && \
   bundle update --quiet && \
   ln -s $(ls -1 /usr/lib/ruby/gems)                          /usr/lib/ruby/gems/current && \
   ln -s $(ls -d1 /usr/lib/ruby/gems/current/gems/smashing-*) /usr/lib/ruby/gems/current/gems/smashing && \
